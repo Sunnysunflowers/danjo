@@ -3,6 +3,7 @@ from django.urls import reverse
 # User是一个自带的模型类，里面是用户的字段
 from django.contrib.auth.models import User
 from markdown import Markdown
+from django.utils.html import strip_tags
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
@@ -50,6 +51,8 @@ class Post(models.Model):
                 'markdown.extensions.extra',
                 'markdown.extensions.codehilite',
             ])
+            self.excerpt = strip_tags(md.convert(self.body))[:32]
+        super().save(*args,**kwargs)
 
     def __str__(self):
         return self.title
